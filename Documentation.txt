@@ -1,0 +1,39 @@
+Lönn Extended Documentation:
+
+This mod has tons of settings! You can edit them at: %LocalAppData%/Loenn/Plugins/LoennExtended/settings.conf (you'll need to run Lönn with the mod installed at least once for this file to get generated)
+
+Features:
+* Editor Layers
+  - Allows for putting entities/decals/triggers into many separate layers to ease editing
+  - Default keybinds: (changeable in settings):
+    * shift + left -> move to the layer 1 below the current one
+    * shift + right -> move to the layer 1 above the current one
+    * shift + down -> toggle whether to show all layers at once or not
+  - Once you use any of the keybinds once, a layer indicator will show up in the top-left region of the editor.
+  - Objects not on the current layer will be rendered with high transparency, and will be unselectable.
+
+* Quick Actions:
+  - You can bind any tool action to the 0-9 keys for quick access.
+  - To create a Quick Action, hold ctrl, then press one of the number keys. The currently selected tool, layer and material will be stored for that key. Then, just press that number key without holding ctrl to use it, regardless of the currrently selected tool.
+  - When creating actions for the "Placement" or "Selection" tool, an additional window will open. You can then choose to either generate the keybind like usual (by clicking "From Current Settings"), or use "From Clipboard" to set up a bind for placing the entity currently located in your clipboard, including all non-default settings. You can use this to, for example, make a keybind for placing custom spinners with the correct settings for your map.
+  - NEW! Pressing ctrl+0 will open another window, which will allow you to chose whick key you want to bind the action to, allowing effectively infinite quick actions! (including combo keybinds like ctrl+shift+alt+o)
+* Trigger extensions:
+  - Color coding triggers: newly placed triggers will have the "Editor Color" field alongside all other properties. Change this to whichever hex color you want, and the trigger will render in that color in the editor (sorry, no color picker for now :( )
+  - Triggers will now always render it's nodes (changeable in settings)
+  - Triggers can render using a smaller (or bigger) font (changeable in settings)
+  - The mod name gets trimmed from trigger rendering (changeable in settings)
+  - The transparency behind triggers is now customizable
+  - Mod authors can now provide "extended text" for triggers. (more info on this below)
+
+Note:
+Many of the features of this mod are planned to be added to Lönn officially at some point, most likely with different implementation details. Once that happens, the feature will be removed from this mod, with a script to convert the old data to the official format if possible.
+The mod is coded to intentionally not load if your Lönn version is newer than the version that this plugin was made for. Once an update happens, the mod will stop working until it gets updated.
+
+For mod makers:
+To set up "extended text" for triggers, which will render additional information about your trigger, you can add a function `_lonnExt_extendedText(trigger)` to your trigger handler table, which should return a string - this will be the text rendered.
+WARNING: This feature is planned to be added directly to Lönn at some point, and it will definitely use a different name than `_lonnExt_extendedText`. To make your extended text easier to port to the official format, it's recommended to write a helper function that takes a trigger handler and a callback, and sets up the extended text. It could look something like this:
+function yourLibrary.addExtendedText(trigger, func)
+  trigger._lonnExt_extendedText = func
+end
+
+
