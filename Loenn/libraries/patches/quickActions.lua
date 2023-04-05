@@ -63,7 +63,7 @@ end
 local targetHotkeyInfo = nil
 
 local function addHotkey(key)
-    hotkeyHandler.createAndRegisterHotkey(key, getHotkeyHandler(key), targetHotkeyInfo or customHotkeyInfo)
+    hotkeyHandler.createAndRegisterHotkey(tostring(key), getHotkeyHandler(key), targetHotkeyInfo or customHotkeyInfo)
 end
 
 local function removeHotkey(index)
