@@ -97,7 +97,7 @@ function triggers.addDrawables(batch, room, targets, viewport, yieldRate)
         local color = colors.triggerTextColor
         -- add integration for layers
         if not layers.isInCurrentLayer(trigger) then
-            color = multColor(color, 0.1)
+            color = multColor(color, layers.hiddenLayerAlpha)
         end
         textRendering.addCenteredText(textBatch, displayName, x, y, width, height, font, triggerRendering.getFontSize(), nil, color)
     end
