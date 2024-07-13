@@ -10,6 +10,50 @@ local function applyPatches()
             return "!" .. trigger.flag
         end
     end
+
+    triggers.registeredTriggers["everest/coreModeTrigger"]._lonnExt_extendedText = function (trigger)
+        return trigger.mode
+    end
+
+    triggers.registeredTriggers["noRefillTrigger"]._lonnExt_extendedText = function (trigger)
+        return trigger.state and "On" or "Off"
+    end
+
+    triggers.registeredTriggers["cameraOffsetTrigger"]._lonnExt_extendedText = function (trigger)
+        return string.format("%s, %s", trigger.cameraX, trigger.cameraY)
+    end
+
+    triggers.registeredTriggers["cameraTargetTrigger"]._lonnExt_extendedText = function (trigger)
+        if trigger.xOnly and trigger.yOnly then
+            return "xy"
+        end
+
+        if trigger.xOnly then
+            return "x"
+        end
+
+        if trigger.yOnly then
+            return "y"
+        end
+    end
+
+    triggers.registeredTriggers["cameraAdvanceTargetTrigger"]._lonnExt_extendedText = function (trigger)
+        if trigger.xOnly and trigger.yOnly then
+            return "xy"
+        end
+
+        if trigger.xOnly then
+            return "x"
+        end
+
+        if trigger.yOnly then
+            return "y"
+        end
+    end
+
+    triggers.registeredTriggers["windTrigger"]._lonnExt_extendedText = function (trigger)
+        return trigger.pattern
+    end
 end
 
 local orig_triggers_loadExternalTriggers = triggers.loadExternalTriggers

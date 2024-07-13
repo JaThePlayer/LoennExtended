@@ -22,6 +22,7 @@ local loadedState = require("loaded_state")
 local selectionUtils = require("selections")
 local placementUtils = require("placement_utils")
 local decalStruct = require("structs.decal")
+local selectionTool = require("tools.selection")
 
 local layersAPI = require("mods").requireFromPlugin("libraries.api.layers")
 
@@ -84,9 +85,15 @@ function decals.getDrawable(texture, handler, room, decal, viewport)
     return drawable
 end
 
--- disable selections
+-- disable selections for items in the wrong editor layer
 local _orig_getSelectionsForItem = selectionUtils.getSelectionsForItem
 function selectionUtils.getSelectionsForItem(room, layer, item, rectangles)
+    if item._fromLayer then
+        -- this field gets set when pasting something
+        -- Paste the item in your current layer, required to not crash and it's nicer to use
+        layersAPI.setLayer(item, layersAPI.getCurrentLayer())
+    end
+
     if isInCurrentLayer(item) then
         return _orig_getSelectionsForItem(room, layer, item, rectangles)
     end
@@ -129,17 +136,20 @@ function decalStruct.encode(decal)
 end
 
 -- force rerender a room when you select it - this way, if you changed layers while in a different room, the correct layers will be visible in the newly selected room
-local orig_loadedState_selectItem = loadedState.selectItem
-function loadedState.selectItem(item, add, ...)
-    orig_loadedState_selectItem(item, add, ...)
+--[[
 
-    local itemType = utils.typeof(item)
-
-    if itemType == "room" then
-        celesteRender.invalidateRoomCache(item)
-        celesteRender.forceRoomBatchRender(item, loadedState)
+    local orig_loadedState_selectItem = loadedState.selectItem
+    function loadedState.selectItem(item, add, ...)
+        orig_loadedState_selectItem(item, add, ...)
+    
+        local itemType = utils.typeof(item)
+    
+        if itemType == "room" then
+            celesteRender.invalidateRoomCache(item)
+            celesteRender.forceRoomBatchRender(item, loadedState)
+        end
     end
-end
+]]
 
 -- hotkeys
 local layerHotkeys = { }

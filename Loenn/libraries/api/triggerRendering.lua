@@ -133,14 +133,19 @@ function triggerRendering.getDisplayText(trigger)
         displayName = utils.humanizeVariableName(name)
         displayName = string.match(displayName, "(.-) Trigger$") or displayName
 
-        if extendedText then
-            local handler = triggers.registeredTriggers[trigger._name]
-            if handler and handler._lonnExt_extendedText then
-                displayName = string.format("%s\n(%s)", displayName, utils.callIfFunction(handler._lonnExt_extendedText, trigger))
-            end
-        end
+
 
         humanizedNameCache[name] = displayName
+    end
+
+    if extendedText then
+        local handler = triggers.registeredTriggers[trigger._name]
+        if handler and handler._lonnExt_extendedText then
+            local txt = utils.callIfFunction(handler._lonnExt_extendedText, trigger)
+            if txt and txt ~= "" then
+                displayName = string.format("%s\n(%s)", displayName, txt)
+            end
+        end
     end
 
     return displayName
