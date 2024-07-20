@@ -44,7 +44,7 @@ end
 local function setAlpha(drawable, alpha)
     if drawable.color then
         local c = drawable.color
-        drawable.color = {c[1], c[2], c[3], (c[4] or 1) * alpha}
+        drawable.color = {c[1] * alpha, c[2] * alpha, c[3] * alpha, (c[4] or 1) * alpha}
     elseif drawable.setColor then
         drawable:setColor({1, 1, 1, alpha})
     end
@@ -107,7 +107,10 @@ placementUtils.finalizePlacement = function(room, layer, item)
     _orig_finalizePlacement(room, layer, item)
 
     if not item._editorLayer then
-        item._editorLayer = currentLayer()
+        local newLayer = currentLayer()
+        if newLayer ~= 0 then
+            item._editorLayer = newLayer
+        end
     end
 
 end
@@ -161,25 +164,15 @@ local function hotkeyRedraw()
     celesteRender.forceRoomBatchRender(room, loadedState)
 end
 
-hotkeyHandler.createAndRegisterHotkey(nextLayerHotkey, function ()
+hotkeyHandler.addHotkey("global", nextLayerHotkey, function ()
     entities.___lonnLayers.nextLayer(1)
-end, layerHotkeys)
-hotkeyHandler.createAndRegisterHotkey(prevLayerHotkey, function ()
+end)
+hotkeyHandler.addHotkey("global", prevLayerHotkey, function ()
     entities.___lonnLayers.nextLayer(-1)
 end, layerHotkeys)
-hotkeyHandler.createAndRegisterHotkey(resetLayerHotkey, function ()
+hotkeyHandler.addHotkey("global", resetLayerHotkey, function ()
     entities.___lonnLayers.nextLayer(nil)
 end, layerHotkeys)
-
--- lönn doesn't have proper mod hotkey support so time for horribleness
-local _orig_createHotkeyDevice = hotkeyHandler.createHotkeyDevice
-function hotkeyHandler.createHotkeyDevice(hotkeys)
-    for index, value in ipairs(layerHotkeys) do
-        table.insert(hotkeys, value)
-    end
-    hotkeyHandler.createHotkeyDevice = _orig_createHotkeyDevice
-    return _orig_createHotkeyDevice(hotkeys)
-end
 
 -- unloads our "hooks"
 local function unload()

@@ -1,0 +1,7 @@
+ui.menubar.le_quick_actions=Quick Actions [Loenn Extended]
+ui.menubar.le_next_layer=Next Layer (shift+rightArrow) [Loenn Extended]
+ui.menubar.le_prev_layer=Previous Layer (shift+leftArrow) [Loenn Extended]
+ui.menubar.le_all_layer=Show All Layers (shift+downArrow) [Loenn Extended]
+ui.menubar.le_always_show_nodes=Always Show Trigger Nodes [Loenn Extended]
+
+ui.quickActionInfoWindow.title=Quick Actions

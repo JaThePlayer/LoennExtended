@@ -56,14 +56,20 @@ function extSettings.get(settingName, default, namespace)
     return value
 end
 
-local supportedLonnVersion = v("0.7.4")
+local supportedLonnVersion = v("0.8")
+local nextBrokenLonnVersion = v("0.9")
 local currentLonnVersion = meta.version
 
 function extSettings.enabled()
-    local enabled = supportedLonnVersion >= currentLonnVersion
+    local enabled = currentLonnVersion >= supportedLonnVersion and currentLonnVersion < nextBrokenLonnVersion
     -- crashes
     -- notifications.notify(string.format("Loenn Extended does not yet support the version %s, the supported version is %s", currentLonnVersion, supportedLonnVersion), 10)
     return enabled
+end
+
+local settings = mods.getModSettings()
+if settings.triggers then
+    settings.triggers.trimModName = nil
 end
 
 return extSettings

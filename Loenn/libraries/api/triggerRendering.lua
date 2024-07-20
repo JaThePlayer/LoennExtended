@@ -13,8 +13,6 @@ local triggerRendering = {}
 local backgroundAlpha = extSettings.get("backgroundAlpha", 0.5, "triggers")
 local triggerFontSize = extSettings.get("textSize", 1, "triggers")
 local lineSizeMult = extSettings.get("lineSize", 1, "triggers")
-local trimModName = extSettings.get("trimModName", true, "triggers")
-local extendedText = extSettings.get("extendedText", true, "triggers")
 local alwaysShowNodes = extSettings.get("alwaysShowNodes", true, "triggers")
 
 local function multColor(color, alpha)
@@ -30,24 +28,24 @@ end
 -- Make default backgrounds use alpha from backgroundAlpha
 colors.triggerColor = multColor({47 / 255, 114 / 255, 100 / 255, 1}, backgroundAlpha)
 
----Gets the border color of a given trigger, taking into account the Editor Color property.
+--- DEPRECATED, CALL triggers.triggerColor INSTEAD!
+--- Gets the border color of a given trigger, taking into account the Editor Color property.
 ---@param trigger table
 ---@return table
 function triggerRendering.getBorderColor(trigger)
-    if trigger._editorColor then
-        return utils.getColor(trigger._editorColor)
-    end
-    return colors.triggerBorderColor
+    local backgroundColor, borderColor = triggers.triggerColor(nil, trigger)
+
+    return borderColor
 end
 
+--- DEPRECATED, CALL triggers.triggerColor INSTEAD!
 ---Gets the background color of a given trigger, taking into account the Editor Color property.
 ---@param trigger table
 ---@return table
 function triggerRendering.getBackgroundColor(trigger)
-    if trigger._editorColor then
-        return multColor(triggerRendering.getBorderColor(trigger), backgroundAlpha)
-    end
-    return colors.triggerColor
+    local backgroundColor, borderColor = triggers.triggerColor(nil, trigger)
+
+    return backgroundColor
 end
 
 ---Returns the size of the font that should be used for trigger rendering
@@ -56,9 +54,8 @@ function triggerRendering.getFontSize()
     return triggerFontSize
 end
 
----Gets the drawable needed to render the background of a trigger, taking into account all Lonn Extended settings.
----@param trigger table
----@return table
+--- DEPRECATED: NEVER CALL
+--- Only exists temporarily until viv helper gets fixed
 function triggerRendering.getTriggerDrawableBg(trigger)
     local x = trigger.x or 0
     local y = trigger.y or 0
@@ -69,86 +66,31 @@ function triggerRendering.getTriggerDrawableBg(trigger)
     local borderColor = triggerRendering.getBorderColor(trigger)
     local backgroundColor = triggerRendering.getBackgroundColor(trigger)
 
-    -- add integration for layers
-    if not layers.isInCurrentLayer(trigger) then
-        borderColor = multColor(borderColor, layers.hiddenLayerAlpha)
-        backgroundColor = multColor(backgroundColor, layers.hiddenLayerAlpha)
-    end
+    local origColor = colors.triggerColor
+    colors.triggerColor = backgroundColor
 
-    local nodeDrawable
-    if alwaysShowNodes then
-        nodeDrawable = drawableFunction.fromFunction(function ()
-            local origWidth = love.graphics.getLineWidth()
-            local origColor = colors.triggerColor
-            love.graphics.setLineWidth(origWidth * lineSizeMult)
-            colors.triggerColor = backgroundColor
+    drawing.callKeepOriginalColor(function()
+        if alwaysShowNodes then
+            triggers.drawSelected(room, "triggers", trigger, borderColor)
+        end
+        local origWidth = love.graphics.getLineWidth()
 
-            drawing.callKeepOriginalColor(function()
-                triggers.drawSelected(room, "triggers", trigger, borderColor)
-
-                love.graphics.setColor(backgroundColor)
-                love.graphics.rectangle("fill", x, y, width, height)
-
-                love.graphics.setColor(borderColor)
-                love.graphics.rectangle("line", x, y, width, height)
-
-                colors.triggerColor = origColor
-                love.graphics.setLineWidth(origWidth)
-            end)
-
-        end)
-    else
-        nodeDrawable = drawableFunction.fromFunction(function ()
-            local origWidth = love.graphics.getLineWidth()
-            love.graphics.setLineWidth(origWidth * lineSizeMult)
-
-            drawing.callKeepOriginalColor(function()
-                love.graphics.setColor(backgroundColor)
-                love.graphics.rectangle("fill", x, y, width, height)
-                love.graphics.rectangle("line", x, y, width, height)
-            end)
-
-
-            love.graphics.setLineWidth(origWidth)
-        end)
-    end
-
-    return nodeDrawable
+        love.graphics.setColor(backgroundColor)
+        love.graphics.rectangle("fill", x + (origWidth / 2), y + (origWidth / 2), width - origWidth, height - origWidth)
+        love.graphics.setColor(borderColor)
+        love.graphics.rectangle("line", x, y, width, height)
+    end)
+    colors.triggerColor = origColor
 end
 
 local humanizedNameCache = {}
+
+-- DEPRECATED, call triggers.triggerText instead!
 ---Gets the text that needs to be rendered for this trigger, taking into account all Lonn Extended settings
 ---@param trigger table
 ---@return string
 function triggerRendering.getDisplayText(trigger)
-    local name = trigger._name
-    local displayName = humanizedNameCache[name]
-
-    if not displayName then
-        -- NEW: trim mod name
-        if trimModName and string.find(name, "/") then
-            name = name:split("/")()[2]
-        end
-        -- Humanize data name and then remove " Trigger" at the end if possible
-        displayName = utils.humanizeVariableName(name)
-        displayName = string.match(displayName, "(.-) Trigger$") or displayName
-
-
-
-        humanizedNameCache[name] = displayName
-    end
-
-    if extendedText then
-        local handler = triggers.registeredTriggers[trigger._name]
-        if handler and handler._lonnExt_extendedText then
-            local txt = utils.callIfFunction(handler._lonnExt_extendedText, trigger)
-            if txt and txt ~= "" then
-                displayName = string.format("%s\n(%s)", displayName, txt)
-            end
-        end
-    end
-
-    return displayName
+    return triggers.triggerText(nil, trigger)
 end
 
 ---Adds extended text support for the given trigger. Returns the handler itself. Will redirect to the officially supported version once that's implemented.

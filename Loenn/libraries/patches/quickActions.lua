@@ -17,8 +17,6 @@ local notifications = require("ui.notification")
 
 local quickActionData = {}
 
-local customHotkeyInfo = {}
-
 local actions = extSettings.getPersistence("quickActions", {})
 for key, value in pairs(actions) do
     if type(key) == "number" then
@@ -59,16 +57,13 @@ local function guessPlacementType(item)
     return "point"
 end
 
--- hotkey_handler.hotkeys
-local targetHotkeyInfo = nil
-
 local function addHotkey(key)
-    hotkeyHandler.createAndRegisterHotkey(tostring(key), getHotkeyHandler(key), targetHotkeyInfo or customHotkeyInfo)
+    hotkeyHandler.addHotkey("global", tostring(key), getHotkeyHandler(key))
 end
 
 local function removeHotkey(index)
     -- remove the hotkey from the hotkey_handler
-    targetHotkeyInfo[index] = nil
+    hotkeyHandler.removeHotkey("global", tostring(index))
 
     local persistence = extSettings.getPersistence()
     persistence.quickActions = persistence.quickActions or {}
@@ -139,12 +134,12 @@ local function getHotkeyCreationHandler(index)
                             local placement = fromClipboard[1]
 
                             action.tool = "placement"
-                            action.layer = placement.layer
+                            action.layer = placement._fromLayer
                             action.material = {
-                                itemTemplate = placement.item,
+                                itemTemplate = placement,
                                 displayName = "<quickActionItem>",
                                 name = "<quickActionItem>",
-                                placementType = guessPlacementType(placement.item)
+                                placementType = guessPlacementType(placement)
                             }
                         end
                     end
@@ -160,26 +155,12 @@ end
 
 -- Create hotkeys ctrl+(0..9) to register quick actions.
 for i = 0, 9, 1 do
-    hotkeyHandler.createAndRegisterHotkey(string.format("ctrl + %s", i), getHotkeyCreationHandler(i), customHotkeyInfo)
+    hotkeyHandler.addHotkey("global", string.format("ctrl + %s", i), getHotkeyCreationHandler(i))
 end
 
 -- Add hotkeys for all actions
 for key, _ in pairs(actions) do
     addHotkey(tostring(key))
-end
-
--- lönn doesn't have proper mod hotkey support so time for horribleness
-local orig = hotkeyHandler.createHotkeyDevice
-
-function hotkeyHandler.createHotkeyDevice(hotkeys)
-    for index, value in ipairs(customHotkeyInfo) do
-        table.insert(hotkeys, value)
-    end
-    hotkeyHandler.createHotkeyDevice = orig
-
-    -- store the hotkey table for later use
-    targetHotkeyInfo = hotkeys
-    return orig(hotkeys)
 end
 
 return {}
