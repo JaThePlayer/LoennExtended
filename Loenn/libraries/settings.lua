@@ -56,12 +56,12 @@ function extSettings.get(settingName, default, namespace)
     return value
 end
 
-local supportedLonnVersion = v("0.8")
-local nextBrokenLonnVersion = v("0.9")
+local supportedLonnVersion = v("0.9")
+local nextBrokenLonnVersion = v("1.0")
 local currentLonnVersion = meta.version
 
 function extSettings.enabled()
-    local enabled = currentLonnVersion >= supportedLonnVersion and currentLonnVersion < nextBrokenLonnVersion
+    local enabled = (currentLonnVersion >= supportedLonnVersion and currentLonnVersion < nextBrokenLonnVersion) or currentLonnVersion == v("0.0.0")
     -- crashes
     -- notifications.notify(string.format("Loenn Extended does not yet support the version %s, the supported version is %s", currentLonnVersion, supportedLonnVersion), 10)
     return enabled

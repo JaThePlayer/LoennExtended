@@ -5,6 +5,11 @@ local entities = require("entities")
 local celesteRender = require("celeste_render")
 local loadedState = require("loaded_state")
 
+local extSettings = require("mods").requireFromPlugin("libraries.settings")
+if not extSettings.enabled() or not extSettings.get("_enabled", true, "layers") then
+    return {}
+end
+
 local function quickActionsButton()
     quickActionWindow.showquickActionWindow()
 end
