@@ -73,7 +73,7 @@ end
 
 local _orig_decal_getDrawable = decals.getDrawable
 function decals.getDrawable(texture, handler, room, decal, viewport)
-    local drawable = _orig_decal_getDrawable(texture, handler, room, decal, viewport)
+    local drawable, depth = _orig_decal_getDrawable(texture, handler, room, decal, viewport)
 
     if drawable and not isInCurrentLayer(decal) then
         setAlpha(drawable, layersAPI.hiddenLayerAlpha)
@@ -82,7 +82,8 @@ function decals.getDrawable(texture, handler, room, decal, viewport)
     if drawable and isInCurrentLayer(decal) then
         setAlpha(drawable, 1.5) -- ???
     end
-    return drawable
+
+    return drawable, depth
 end
 
 -- disable selections for items in the wrong editor layer
