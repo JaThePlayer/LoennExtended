@@ -20,7 +20,7 @@ local function applyPatches()
     end
 
     triggers.registeredTriggers["cameraOffsetTrigger"]._lonnExt_extendedText = function (trigger)
-        return string.format("%s, %s", trigger.cameraX, trigger.cameraY)
+        return string.format("%s, %s", utils.prettifyFloat(trigger.cameraX), utils.prettifyFloat(trigger.cameraY))
     end
 
     triggers.registeredTriggers["cameraTargetTrigger"]._lonnExt_extendedText = function (trigger)
