@@ -1,11 +1,8 @@
 local triggers = require("triggers")
 local colors = require("consts.colors")
-local utils = require("utils")
 local drawing = require("utils.drawing")
-local drawableFunction = require("structs.drawable_function")
 
 local extSettings = require("mods").requireFromPlugin("libraries.settings")
-local layers = require("mods").requireFromPlugin("libraries.api.layers")
 
 local triggerRendering = {}
 

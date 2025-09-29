@@ -1,5 +1,5 @@
 --[[
-    Handles ordering extra attributes added to entities/triggers by Loenn Extended: _editorLayer, and _editorColor
+    Handles ordering extra attributes added to entities/triggers by Loenn Extended: _editorColor
 ]]
 local utils = require("utils")
 local extSettings = require("mods").requireFromPlugin("libraries.settings")
@@ -15,12 +15,6 @@ local editorColorFieldInfo = {
     displayName = "Editor Color",
     tooltipText = "The color to use when rendering this trigger in-editor.\nLeave empty to use lonn's defaults instead.\nAdded by Loenn Extended",
     allowEmpty = true,
-}
-
-local editorLayerFieldInfo = {
-    fieldType = "integer",
-    displayName = "Editor Layer",
-    tooltipText = "The layer in which this entity is in-editor.\nAdded by Loenn Extended"
 }
 
 local paddingFieldInfo = {
@@ -49,15 +43,6 @@ function formUtils.prepareFormData(handler, data, options, handlerArguments, ...
     local layer = handlerArguments and handlerArguments[1]
 
     local hasLayer = false
-    if data._editorLayer or (layer == "triggers" or layer == "entities" or layer == "decalsFg" or layer == "decalsBg") then
-        hasLayer = true
-        table.insert(fieldOrder, insertIndex, "_editorLayer")
-        insertIndex += 1
-        fieldInformation._editorLayer = editorLayerFieldInfo
-        if not dummyData._editorLayer then
-            dummyData._editorLayer = 0
-        end
-    end
 
     if data._editorColor or layer == "triggers" then
         table.insert(fieldOrder, insertIndex, "_editorColor")

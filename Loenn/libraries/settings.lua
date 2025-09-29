@@ -56,8 +56,8 @@ function extSettings.get(settingName, default, namespace)
     return value
 end
 
-local supportedLonnVersion = v("0.9")
-local nextBrokenLonnVersion = v("1.0")
+local supportedLonnVersion = v("1.0.5")
+local nextBrokenLonnVersion = v("1.1")
 local currentLonnVersion = meta.version
 
 function extSettings.enabled()

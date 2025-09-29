@@ -1,29 +1,11 @@
 local menubar = require("ui.menubar")
 local mods = require("mods")
-local quickActionWindow = mods.requireFromPlugin("ui.windows.quickActionInfoWindow")
-local entities = require("entities")
 local celesteRender = require("celeste_render")
 local loadedState = require("loaded_state")
 
 local extSettings = require("mods").requireFromPlugin("libraries.settings")
-if not extSettings.enabled() or not extSettings.get("_enabled", true, "layers") then
+if not extSettings.enabled() then
     return {}
-end
-
-local function quickActionsButton()
-    quickActionWindow.showquickActionWindow()
-end
-
-local function allLayer()
-    entities.___lonnLayers.nextLayer(nil)
-end
-
-local function prevLayer()
-    entities.___lonnLayers.nextLayer(-1)
-end
-
-local function nextLayer()
-    entities.___lonnLayers.nextLayer(1)
 end
 
 local function alwaysShowNodes()
@@ -42,9 +24,6 @@ local newEntries = {
     view = {
         {},
         { "le_always_show_nodes", alwaysShowNodes, "checkbox" },
-        { "le_all_layer", allLayer },
-        { "le_next_layer", nextLayer },
-        { "le_prev_layer", prevLayer },
     },
 }
 

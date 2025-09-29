@@ -12,8 +12,6 @@ if not extSettings.enabled() or not extSettings.get("_enabled", true, "triggers"
     return {}
 end
 
-local layersApi = require("mods").requireFromPlugin("libraries.api.layers")
-local textRendering = require("mods").requireFromPlugin("libraries.api.textRendering")
 local triggerRendering = require("mods").requireFromPlugin("libraries.api.triggerRendering")
 
 local triggers = require("triggers")
@@ -65,13 +63,6 @@ function triggers.triggerColor(room, trigger, ...)
     if trigger._editorColor and trigger._editorColor ~= "" and trigger._editorColor ~= "265B50" then
         borderColor = utils.getColor(trigger._editorColor) or colors.triggerBorderColor
         backgroundColor = multColor(borderColor, backgroundAlpha)
-    end
-
-    -- Handle editor layers
-    if not layersApi.isInCurrentLayer(trigger) then
-        backgroundColor = multColor(backgroundColor, layersApi.hiddenLayerAlpha)
-        borderColor = multColor(borderColor, layersApi.hiddenLayerAlpha)
-        triggerTextColor = multColor(triggerTextColor, layersApi.hiddenLayerAlpha)
     end
 
     return backgroundColor, borderColor, triggerTextColor

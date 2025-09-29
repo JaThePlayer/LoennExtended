@@ -3,14 +3,6 @@ Lönn Extended Documentation:
 This mod has tons of settings! You can edit them at: %LocalAppData%/Loenn/Plugins/LoennExtended/settings.conf (you'll need to run Lönn with the mod installed at least once for this file to get generated)
 
 Features:
-* Editor Layers
-  - Allows for putting entities/decals/triggers into many separate layers to ease editing
-  - Default keybinds: (changeable in settings):
-    * shift + left -> move to the layer 1 below the current one
-    * shift + right -> move to the layer 1 above the current one
-    * shift + down -> toggle whether to show all layers at once or not
-  - Once you use any of the keybinds once, a layer indicator will show up in the top-left region of the editor.
-  - Objects not on the current layer will be rendered with high transparency, and will be unselectable.
 
 * Quick Actions:
   - You can bind any tool action to the 0-9 keys for quick access.
