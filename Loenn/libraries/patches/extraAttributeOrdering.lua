@@ -42,8 +42,6 @@ function formUtils.prepareFormData(handler, data, options, handlerArguments, ...
 
     local layer = handlerArguments and handlerArguments[1]
 
-    local hasLayer = false
-
     if data._editorColor or layer == "triggers" then
         table.insert(fieldOrder, insertIndex, "_editorColor")
         insertIndex += 1
@@ -51,12 +49,10 @@ function formUtils.prepareFormData(handler, data, options, handlerArguments, ...
         if not dummyData._editorColor then
             dummyData._editorColor = ""
         end
-    elseif hasLayer then
         -- Add padding to not mess up the layout
         table.insert(fieldOrder, insertIndex, "__lonnExt_pad")
         insertIndex += 1
         fieldInformation.__lonnExt_pad = paddingFieldInfo
-        --dummyData.__lonnExt_pad = ""
     end
 
     return dummyData, fieldInformation, fieldOrder
